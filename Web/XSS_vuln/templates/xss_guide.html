@@ -1,0 +1,118 @@
+{# templates/xss_guide.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  {{ super() }}
+  <!-- 페이지 전용 스타일(이미 static/css/style.css에 추가했으면 불필요) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <header class="site">
+    <div class="brand"><span class="dot"></span>XSS 정리</div>
+    <div class="meta">핵심 요약 · 예방·테스트 가이드</div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h1>XSS(교차 사이트 스크립팅)</h1>
+      <p class="subtitle">클라이언트 측에서 실행되는 악성 스크립트 삽입 취약점 — 영향, 유형, 방어 원칙 요약</p>
+
+      <div class="section">
+        <h2>핵심 개념</h2>
+        <p class="muted">XSS는 공격자가 웹 출력에 악성 스크립트를 주입하여 다른 사용자의 브라우저에서 실행시키는 공격입니다. 세션 탈취, 페이지 변조, 피싱, 키로깅 등이 가능합니다.</p>
+      </div>
+
+      <div class="section">
+        <h2>영향</h2>
+        <ul class="check">
+          <li>세션/토큰 탈취 → 계정 탈취</li>
+          <li>페이지 변조 · 피싱 · 자격증명 탈취</li>
+          <li>브라우저 API 접근(권한 오용)</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>유형</h2>
+        <dl>
+          <dt>Stored XSS</dt>
+          <dd>DB·게시물 등에 악성 스크립트가 저장되어 다수 피해자에게 전달되는 형태. 피해 범위 큼.</dd>
+
+          <dt>Reflected XSS</dt>
+          <dd>URL 파라미터 등 요청이 응답에 반사되어 즉시 실행되는 형태. 피싱 링크에 자주 사용됨.</dd>
+
+          <dt>DOM-based XSS</dt>
+          <dd>클라이언트 JS가 취약한 DOM API로 사용자 입력을 그대로 처리해 발생. 서버 응답 자체는 악성이 아닐 수도 있음.</dd>
+
+          <dt>Universal XSS</dt>
+          <dd>브라우저나 플러그인의 취약점으로 SOP 우회 등으로 발생하는 경우(특수한 케이스).</dd>
+        </dl>
+      </div>
+
+      <div class="section">
+        <h2>방어 원칙 (우선순위)</h2>
+        <ul class="check">
+          <li>출력 시 문맥별 인코딩 적용(HTML, JS, URL, CSS 각각 다름)</li>
+          <li>입력 검증은 whitelist 방식 권장</li>
+          <li>DOM 조작 시 textContent/innerText 또는 createTextNode 사용</li>
+          <li>CSP 적용(가능하면 nonce 기반), HttpOnly·Secure·SameSite 쿠키 설정</li>
+          <li>서드파티 스크립트 관리 및 최소화</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>테스트·탐지</h2>
+        <p class="muted">Burp, OWASP ZAP 같은 도구로 자동 스캔, 수동으로는 간단한 페이로드로 반사/저장/DOM 반응을 확인합니다. 운영 환경에서는 CSP Report-Only로 위반 로그 수집이 유용합니다.</p>
+      </div>
+
+      <div class="foot">요약: 출력 인코딩 + 안전한 DOM API 사용 + CSP/쿠키 설정으로 대부분의 XSS를 예방할 수 있습니다.</div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+          <div class="badge">예시 코드</div>
+          <div class="muted" style="font-size:12px">테스트·교육용</div>
+        </div>
+
+        <div class="example code">
+<pre>&lt;!-- 취약: 사용자 입력을 그대로 출력 --&gt;
+&lt;div&gt;&lt;?= $_GET['q'] ?&gt;&lt;/div&gt;
+
+&lt;!-- DOM 기반 취약 예 --&gt;
+&lt;script&gt;
+const q = new URL(location).searchParams.get('q');
+// 위험: innerHTML로 삽입하면 XSS 발생 가능
+document.getElementById('out').innerHTML = q;
+&lt;/script&gt;
+
+&lt;!-- 안전한 대체 --&gt;
+&lt;script&gt;
+const q2 = new URL(location).searchParams.get('q');
+// 안전: textContent로 삽입
+document.getElementById('out').textContent = q2 || '';
+&lt;/script&gt;
+</pre>
+        </div>
+
+        <div style="margin-top:12px" class="callout">
+          <div class="muted">주의: 실제 공격 스니펫(예: 쿠키 exfiltration)은 악용 소지가 있으므로 운영 환경에서는 차단하고, 교육·검증은 안전한 테스트 환경에서만 수행하세요.</div>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h2 style="margin:0 0 8px 0">빠른 체크리스트</h2>
+        <ul class="check">
+          <li>템플릿 엔진 이스케이프 사용 여부</li>
+          <li>innerHTML / document.write 사용 지점 점검</li>
+          <li>CSP 설정 및 Report-Only 로그 확인</li>
+          <li>쿠키에 HttpOnly/ SameSite 적용</li>
+        </ul>
+      </div>
+
+    </aside>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+<li class="list-group-item">
+  <div class="d-flex">
+    <div class="avatar me-3">{{ comment.name[0]|upper }}</div>
+    <div class="flex-grow-1">
+      <div class="d-flex justify-content-between">
+        <strong>{{ comment.name }}</strong>
+        <small class="text-muted">{{ comment.created_at }}</small>
+      </div>
+      <!-- 취약 지점 (Stored XSS): content를 안전 처리 없이 출력 -->
+      <div class="mt-1 comment-content">{{ comment.content | safe }}</div>
+    </div>
+  </div>
+</li>

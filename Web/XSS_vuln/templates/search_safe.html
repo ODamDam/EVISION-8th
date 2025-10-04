@@ -1,0 +1,16 @@
+{# templates/search_safe.html #}
+{% extends "base.html" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block content %}
+  <div class="wrap">
+    <section class="card">
+      <h1>검색 결과 (안전)</h1>
+      <p>검색어: {{ q }}</p>  {# 자동 이스케이프 유지 #}
+    </section>
+  </div>
+{% endblock %}

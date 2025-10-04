@@ -1,0 +1,242 @@
+.avatar{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#6b73ff,#000dff);
+  color:white;font-weight:700;
+}
+.comment-content{white-space:pre-wrap;}
+
+/* === xss_guide 전용 스타일 (아래를 파일 끝에 추가) === */
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --muted:#9aa4b2;
+  --accent:#6ee7b7;
+  --danger:#ff6b6b;
+  --glass: rgba(255,255,255,0.03);
+  --mono: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, monospace;
+  --radius:12px;
+  --maxw:1100px;
+  color-scheme: dark;
+}
+
+html,body{height:100%;}
+body{
+  margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(110,231,183,0.04), transparent),
+              radial-gradient(900px 500px at 90% 90%, rgba(106,90,255,0.03), transparent),
+              var(--bg);
+  color:#e6eef6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  padding:32px 20px; display:flex; justify-content:center; align-items:flex-start;
+}
+
+.wrap{width:100%; max-width:var(--maxw);}
+
+header.site{
+  display:flex; gap:16px; align-items:center; margin-bottom:20px;
+}
+
+.brand{
+  background:linear-gradient(135deg,var(--accent),#8ab4ff);
+  color:#041018; font-weight:700; padding:12px 16px; border-radius:12px; box-shadow:0 6px 18px rgba(2,6,23,0.6);
+  display:flex; align-items:center; gap:12px; font-size:16px;
+}
+
+.brand .dot{width:10px; height:10px; background:#041018; border-radius:50%; box-shadow:0 0 0 6px rgba(255,255,255,0.02) inset;}
+
+.meta{color:var(--muted); font-size:13px}
+
+main.grid{display:grid; grid-template-columns: 1fr 360px; gap:20px;}
+
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:var(--radius); padding:20px; box-shadow:0 6px 28px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03);
+}
+
+h1{margin:0 0 8px 0; font-size:20px}
+.subtitle{margin:0 0 16px 0; color:var(--muted); font-size:13px}
+
+.section{margin-bottom:18px}
+.section h2{font-size:15px; margin:0 0 8px 0}
+.pill{display:inline-block; padding:6px 10px; background:var(--glass); border-radius:999px; font-size:12px; color:var(--muted);}
+
+ul.check{padding-left:18px; margin:6px 0 0 0; color:var(--muted);}
+
+.sidebar .card{position:sticky; top:32px}
+.code{
+  background:#021025; padding:14px; border-radius:10px; font-family:var(--mono); font-size:13px; overflow:auto; line-height:1.5;
+  border:1px solid rgba(255,255,255,0.03);
+}
+
+pre{margin:0; white-space:pre-wrap; word-break:break-word}
+
+.example{margin-top:8px}
+
+.badge{display:inline-flex; align-items:center; gap:8px; padding:6px 8px; border-radius:8px; background:rgba(255,255,255,0.02); font-size:12px}
+
+.muted{color:var(--muted)}
+
+.token-tag{color:#7dd3fc}
+.token-attr{color:#ffd580}
+.token-str{color:#b4f1c3}
+.token-comment{color:#6b7280}
+
+@media (max-width:980px){
+  main.grid{grid-template-columns:1fr;}
+  .sidebar{order:2}
+}
+
+.foot{font-size:12px; color:var(--muted); margin-top:8px}
+
+.callout{background:linear-gradient(90deg, rgba(110,231,183,0.04), rgba(138,180,255,0.02)); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.02);}
+
+.warning{color:var(--danger); font-weight:600}
+
+dl{margin:0}
+dt{font-weight:700}
+dd{margin:6px 0 12px 0; color:var(--muted)}
+
+/* 사이드바 텍스트를 흰색으로 강제 지정 */
+.sidebar .card {
+  color: #ffffff; /* 기본 텍스트 색을 흰색으로 설정 */
+}
+
+/* 제목(예: 빠른 안내) */
+.sidebar .card h1,
+.sidebar .card h3,
+.sidebar .card h2 {
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+/* 설명(설명문구, muted 클래스 등) */
+.sidebar .card .muted,
+.sidebar .card p,
+.sidebar .card dd,
+.sidebar .card li {
+  color: #ffffff;
+  opacity: 0.9; /* 필요하면 약간 묽게 보이도록 */
+}
+
+/* 링크 색상(사이드바 내부 링크만) */
+.sidebar .card a {
+  color: #bfefff; /* 연한 청색 계열(눈에 띄되 과하지 않음) */
+  text-decoration: underline;
+}
+
+/* 카드 내부의 별도 작은 라벨(예: badge)도 흰색으로 */
+.sidebar .card .badge {
+  color: #041018;
+  background: #ffffff; /* 배경 흰색이면 텍스트는 어둡게 유지 */
+}
+
+/* dl 구성(예: Stored XSS 등 dt) 글자를 흰색으로 */
+.section dl dt,
+.card dl dt,
+dl dt {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* dl의 설명(dd)는 약간 덜 강조(연한 흰색) */
+.section dl dd,
+.card dl dd,
+dl dd {
+  color: rgba(255,255,255,0.90);
+}
+
+/* 필요하면 목록 항목도 흰색으로 */
+.section ul.check li,
+.card ul.check li {
+  color: #ffffff;
+}
+
+/* 댓글 메타(이름 · 시간) 흰색으로 */
+.card .muted {
+  color: #ffffff !important;
+  opacity: 0.95;
+  font-size: 13px; /* 기존 크기 유지 또는 조정 */
+}
+
+/* 댓글 메타만 흰색으로 (더 정밀) */
+.comment-meta {
+  color: #ffffff;
+  opacity: 0.95;
+  font-size: 13px;
+}
+
+/* index 페이지의 '댓글 목록' h2만 흰색으로 변경 */
+.wrap main.grid section.card > h3 {
+  color: #ffffff;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+/* 댓글 작성 섹션 전체 텍스트를 흰색으로 */
+.wrap main.grid section.card h1,
+.wrap main.grid section.card label,
+.wrap main.grid section.card input,
+.wrap main.grid section.card textarea,
+.wrap main.grid section.card button {
+  color: #ffffff;
+}
+
+/* placeholder 글자도 흰색으로 */
+.wrap main.grid section.card input::placeholder,
+.wrap main.grid section.card textarea::placeholder {
+  color: #cccccc;
+  opacity: 1;
+}
+
+/* 버튼 배경색은 기존 Bootstrap primary 유지 가능, 필요시 수정 */
+.wrap main.grid section.card button.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #ffffff;
+}
+
+/* 댓글 작성 폼: 입력 텍스트 검정색 (배경 유지) */
+.wrap main.grid section.card input[type="text"],
+.wrap main.grid section.card textarea {
+  color: #000000;
+}
+
+/* placeholder(플레이스홀더)도 약간 연하게 표시 */
+.wrap main.grid section.card input::placeholder,
+.wrap main.grid section.card textarea::placeholder {
+  color: #666666;
+  opacity: 1;
+}
+
+/* 1) '댓글 목록' 제목 (index.html의 h3) 흰색 */
+.wrap main.grid section.card > h3 {
+  color: #ffffff;
+  opacity: 0.98;
+  font-weight: 700;
+}
+
+/* 2) 댓글 메타(이름 · 시간) 흰색 (list 내부 .muted) */
+.wrap main.grid section.card ul.list-unstyled li .muted {
+  color: #ffffff !important;
+  opacity: 0.95;
+  font-size: 13px;
+}
+
+/* 3) 댓글 본문(내용) 및 내부 모든 요소를 흰색으로 강제 */
+.wrap main.grid section.card ul.list-unstyled li > .card {
+  color: #ffffff !important;
+  background-color: rgba(255,255,255,0.03); /* 필요 시 배경 조절 */
+}
+
+/* 본문 내부에 포함된 태그들(span, a, script 텍스트 등)까지 흰색으로 강제 */
+.wrap main.grid section.card ul.list-unstyled li > .card,
+.wrap main.grid section.card ul.list-unstyled li > .card * {
+  color: #ffffff !important;
+}
+
+/* 링크(댓글 내 링크)를 구분해서 보여주고 싶으면 색상 지정 */
+.wrap main.grid section.card ul.list-unstyled li > .card a {
+  color: #bfefff !important;
+  text-decoration: underline;
+}
+

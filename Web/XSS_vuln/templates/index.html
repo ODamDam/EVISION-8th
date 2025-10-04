@@ -1,0 +1,63 @@
+{# templates/index.html (패치: |safe 제거) #}
+{% extends "base.html" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <header class="site">
+    <div class="brand"><span class="dot"></span>XSS Lab</div>
+    <div class="meta">취약 실습 · 댓글 테스트 페이지</div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h1>댓글 작성</h1>
+
+      <form action="{{ url_for('post_comment') }}" method="post" class="mb-3">
+        <div class="mb-2">
+          <label class="form-label">이름:</label>
+          <input type="text" name="name" class="form-control" placeholder="이름 (선택)">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">내용:</label>
+          <textarea name="content" class="form-control" rows="4" placeholder="내용"></textarea>
+        </div>
+        <button class="btn btn-primary mt-2" type="submit">등록</button>
+      </form>
+
+      <hr>
+
+      <h3>댓글 목록</h3>
+      {% if comments %}
+        <ul class="list-unstyled">
+          {% for c in comments %}
+            <li class="mb-3">
+              <div class="muted" style="font-size:13px;">
+                <strong>{{ c.name }}</strong> · {{ c.created_at }}
+              </div>
+              <div class="card" style="margin-top:6px; padding:12px;">
+                {{ c.content }}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">등록된 댓글이 없습니다.</p>
+      {% endif %}
+    </section>
+
+    <aside class="sidebar">
+      <div class="card">
+        <h3 style="margin:0 0 8px 0">빠른 안내</h3>
+        <p class="muted">XSS 취약 실습용 페이지 입니다.</p>
+        <hr>
+        <p class="muted">가이드: <a href="{{ url_for('xss_guide') }}">XSS 정리 페이지</a></p>
+      </div>
+    </aside>
+  </main>
+</div>
+{% endblock %}

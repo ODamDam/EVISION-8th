@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>XSS LAB - 관리자</title>
+  </head>
+  <body>
+    <h1>관리자 페이지</h1>
+    <a href="{{ url_for('index') }}">홈으로</a>
+    <h2>모든 댓글</h2>
+    <table border="1" cellpadding="5">
+      <tr><th>ID</th><th>이름</th><th>내용</th><th>작성일</th></tr>
+      {% for row in rows %}
+        <tr>
+          <td>{{ row['id'] }}</td>
+          <td>{{ row['name'] }}</td>
+          <!-- 여기서도 의도적으로 |safe 적용 -->
+          <td>{{ row['content']|safe }}</td>
+          <td>{{ row['created_at'] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </body>
+  1
+</html>

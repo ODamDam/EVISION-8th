@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="wrap">
+    <section class="card">
+      <h1>검색 결과(취약)</h1>
+      <p>검색어: {{ q | safe }}</p> <!-- 취약: |safe 로 인해 스크립트가 실행됨 -->
+    </section>
+  </div>
+{% endblock %}
