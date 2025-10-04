@@ -1,7 +1,8 @@
-의도적 취약 애플리케이션
+XSS Web 실습
 =================================
 
 이 프로젝트는 XSS(교차 사이트 스크립팅) 취약점을 **학습·실습**하기 위해 고의로 취약점이 포함된 웹 애플리케이션입니다.
+관련 설명: https://velog.io/@damdam03/Web-%EC%8B%9C%ED%81%90%EC%96%B4-%EC%BD%94%EB%94%A9-%EC%8B%A4%EC%8A%B5
 
 간단 사용법:
 - 의존성 설치: `pip install -r requirements.txt` (또는 README의 안내 참조)
