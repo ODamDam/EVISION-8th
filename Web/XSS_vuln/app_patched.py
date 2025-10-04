@@ -1,6 +1,7 @@
 # app_patched.py
 import sqlite3
 import datetime
+import re
 from flask import Flask, g, render_template, request, redirect, url_for, make_response
 import bleach
 from flask_talisman import Talisman
@@ -50,34 +51,68 @@ def close_db(e=None):
     if db:
         db.close()
 
-# 간단한 입력 검증: 길이 제한 및 공백 제거
+# 안전 보조 함수들
 def sanitize_search_input(q: str, max_len: int = 200) -> str:
     if not q:
         return ''
     q = q.strip()
     if len(q) > max_len:
         q = q[:max_len]
-    # 추가 검증(허용 문자셋 등)을 원하면 여기서 처리
-    # 예: 정규표현식으로 특수문자 제한 등
     return q
 
-# index: 출력은 자동 이스케이프(템플릿에서 |safe 사용 금지)
+def neutralize_js_patterns(text: str) -> str:
+    """
+    입력 텍스트에서 위험한 JS 호출/패턴을 무해화합니다.
+    - alert/confirm/prompt 제거
+    - document.cookie, location.href, window.open, javascript: 등 제거
+    - <script>...</script> 블록 제거
+    """
+    if not text:
+        return text
+
+    # 1) 스크립트 태그(전체) 제거 — 가장 강력한 방어층
+    text = re.sub(r"(?is)<\s*script[^>]*>.*?<\s*/\s*script\s*>", "", text)
+
+    # 2) 흔한 JS 함수 호출 무해화
+    text = re.sub(r"(?i)alert\s*\([^)]*\)", "[removed]", text)
+    text = re.sub(r"(?i)confirm\s*\([^)]*\)", "[removed]", text)
+    text = re.sub(r"(?i)prompt\s*\([^)]*\)", "[removed]", text)
+
+    # 3) 위험한 객체/속성/네비게이션 무해화
+    text = re.sub(r"(?i)document\.cookie", "[removed]", text)
+    text = re.sub(r"(?i)location\.href", "[removed]", text)
+    text = re.sub(r"(?i)window\.open\s*\([^)]*\)", "[removed]", text)
+    text = re.sub(r"(?i)javascript\s*:", "[removed]", text)
+
+    return text
+
+# 라우트
 @app.route("/", methods=["GET"])
 def index():
-    q = request.args.get('q', '')
+    q = request.args.get('q', '')  # 검색 기능이 있다면 사용 가능
     cur = get_db().execute('SELECT id, name, content, created_at FROM comments ORDER BY id DESC LIMIT 100')
     comments = cur.fetchall()
     return render_template('index.html', comments=comments, q=q)
 
-# 댓글 저장: 입력 정화(bleach) 적용
 @app.route("/comment", methods=["POST"])
 def post_comment():
+    """
+    안전한 댓글 저장:
+    1) bleach.clean으로 태그 제거
+    2) neutralize_js_patterns로 JS 패턴 무해화
+    3) DB 저장
+    """
     name = request.form.get('name') or '익명'
     content = request.form.get('content') or ''
     created_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # 입력 정화: 모든 태그 제거 (strip=True)
+    # 1) 기본 태그 제거(혹은 제한된 허용 태그만 남김)
     clean_content = bleach.clean(content, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRS, strip=True)
+
+    # 2) 추가 패턴 무해화 (alert(), document.cookie 등)
+    clean_content = neutralize_js_patterns(clean_content)
+
+    # 3) 저장
     db = get_db()
     db.execute('INSERT INTO comments (name, content, created_at) VALUES (?, ?, ?)',
                (name, clean_content, created_at))
@@ -94,7 +129,6 @@ def admin():
 def xss_guide():
     return render_template('xss_guide.html')
 
-# 안전한 검색(Reflected XSS 방지: 입력 검증 + bleach + 출력 이스케이프)
 @app.route('/search')
 def search():
     q = request.args.get('q', '')

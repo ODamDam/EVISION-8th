@@ -1,0 +1,54 @@
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>XSS Lab</title>
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+
+  
+  
+  
+  <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">XSS Lab</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/">홈</a></li>
+        <li class="nav-item"><a class="nav-link" href="/admin">관리자</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  
+    
+  
+
+  
+  
+  <div class="wrap">
+    <section class="card">
+      <h1>검색 결과 (안전)</h1>
+      <p>검색어: alert(&#39;reflected&#39;)</p>  
+    </section>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/main.js"></script>
+
+
+
+
+</body>
+</html>
